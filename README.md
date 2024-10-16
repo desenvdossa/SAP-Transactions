@@ -1,2 +1,2 @@
 # SAP-Transactions
-SQL transaction made for SAP B1 
+SQL transactions made for SAP B1 

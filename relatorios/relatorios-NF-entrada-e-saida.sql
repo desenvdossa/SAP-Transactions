@@ -1,0 +1,29 @@
+--Relatório utilizado no gerador de consultas dentro do SAP B1
+
+SELECT 'NF ENTRADA' ,T0.NumAtCard DOCUMENTO, T0.DocDate DATA_LANCAMENTO, T0.TaxDate DATA_DOCUMENTO,T1.ItemCode CODIGO_ITEM, T1.Dscription ITEM, T1.WhsCode DEPOSITO, T1.Quantity QUANTIDADE, T1.TotalSumSy VALOR, T2.DocEntry PC, T0.CardCode CODIGO_FORNECEDOR, T0.CardName NOME_FORNCEDOR, T3.DocEntry SC
+FROM OPCH T0
+INNER JOIN PCH1 T1 ON T0.DocEntry = T1.DocEntry 
+LEFT JOIN POR1 T2 ON T1.BaseRef = T2.DocEntry
+LEFT JOIN PRQ1 T3 ON T3.DocEntry = T2.BaseEntry
+WHERE 
+T1.WhsCode >= [%1] AND T1.WhsCode <= [%2] 
+AND T0.DocDate >= [%3] AND T0.DocDate <= [%4]
+
+union 
+
+SELECT 'TRANSFERENCIA DE ESTOQUE' , T0.NumAtCard DOCUMENTO, T0.DocDate DATA_LANCAMENTO, T0.TaxDate DATA_DOCUMENTO,T1.ItemCode CODIGO_ITEM, T1.Dscription ITEM, T1.WhsCode DEPOSITO, T1.Quantity QUANTIDADE, T1.TotalSumSy VALOR, T2.DocEntry PC, T0.CardCode CODIGO_FORNECEDOR, T0.CardName NOME_FORNCEDOR, '00000'
+FROM OWTR T0
+INNER JOIN WTR1 T1 ON T1.DocEntry = T0.DocEntry
+INNER JOIN OWTR T2 ON T2.DocEntry = T1.BaseRef
+WHERE 
+T1.WhsCode >= [%1] AND T1.WhsCode <= [%2] 
+AND T0.DocDate >= [%3] AND T0.DocDate <= [%4]
+
+union 
+
+SELECT 'SAIDA DE MERCADORIA' , T0.NumAtCard DOCUMENTO, T0.DocDate DATA_LANCAMENTO, T0.TaxDate DATA_DOCUMENTO,T1.ItemCode CODIGO_ITEM, T1.Dscription ITEM, T1.WhsCode DEPOSITO, T1.Quantity QUANTIDADE, T1.TotalSumSy VALOR, '00000', T0.CardCode CODIGO_FORNECEDOR, T0.CardName NOME_FORNCEDOR, '00000'
+FROM OIGE T0
+INNER JOIN IGE1 T1 ON T1.DocEntry = T0.DocEntry
+WHERE 
+T1.WhsCode >= [%1] AND T1.WhsCode <= [%2] 
+AND T0.DocDate >= [%3] AND T0.DocDate <= [%4]

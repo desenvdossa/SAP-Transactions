@@ -11,11 +11,10 @@ IF (@sObjTyp in ('BR1POWOR') AND @sTraTyp IN ('U') AND (@iErrorCode = 0))
 				T0.DocEntry
 			FROM [dbo].[@UPR_OWOR] T0
 			INNER JOIN OUSR T1 ON T0.UserSign = T1.INTERNAL_K 
-			--INNER JOIN (SELECT MAX(T3.UpdateTime) VALOR FROM [dbo].[@UPR_AWOR] T3 WHERE T3.DOCENTRY = @sKeyVal) AS T2 ON T0.DocNum = T2.DocNum
-			INNER JOIN (SELECT T3.UpdateTime, T3.DocNum, T3.U_UPStatus FROM [dbo].[@UPR_AWOR] T3 WHERE T3.DOCENTRY = @sKeyVal AND T3.UpdateTime = (SELECT MAX(T4.UpdateTime) VALOR FROM [dbo].[@UPR_AWOR] T4 WHERE T4.DOCENTRY = @sKeyVal)) AS T2 ON T0.DocNum = T2.DocNum
+			INNER JOIN (SELECT T3.UpdateTime, T3.DocNum, T3.U_UPStatus FROM [dbo].[@UPR_AWOR] T3 WHERE T3.DOCENTRY = @sKeyVal AND T3.LogInst = (SELECT MAX(T4.LogInst)-1 VALOR FROM [dbo].[@UPR_AWOR] T4 WHERE T4.DOCENTRY = @sKeyVal)) AS T2 ON T0.DocNum = T2.DocNum
 			WHERE T0.DOCENTRY = @sKeyVal
 			AND T2.U_UPStatus = 'R'
-			AND T0.U_UPStatus = 'L'
+			AND T0.U_UPStatus = 'P'
 			AND ( (Select top 1 UserCode from USR5 where SessionID=@@spid order by Date desc,Time desc) NOT IN ('USUARIO1,USUARIO2,...,USUARIOn') )
 			
 			) 
